@@ -1,0 +1,19 @@
+{
+    "name": "alirezax5/marzbanapiphp",
+    "description": "marzban api",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "alirezax5\\MarzbanApi\\": "src/"
+
+        }
+    },
+    "authors": [
+        {
+            "name": "alirezax5",
+            "email": "alirezaaghax6@gmail.com"
+        }
+    ],
+    "require": {
+    }
+}
