@@ -4,9 +4,9 @@ namespace alirezax5\MarzbanApi\Api;
 
 trait User
 {
-    public function addUser($username, $expire, $data_limit, $proxies)
+    public function addUser($username, $expire, $data_limit, $proxies,$status ='active',$note= '',$data_limit_reset_strategy = 'no_reset',$on_hold_expire_duration = 0,$on_hold_timeout = '2023-11-03T20:30:00')
     {
-        return $this->request('/api/user', compact('username', 'expire', 'data_limit', 'proxies'), self::POST);
+        return $this->request('/api/user', compact('username', 'expire', 'data_limit', 'proxies','status','note','data_limit_reset_strategy','on_hold_expire_duration','on_hold_timeout'), self::POST);
     }
 
     public function getUser($username)
@@ -14,9 +14,9 @@ trait User
         return $this->request('/api/user/' . $username, [], 'GET');
     }
 
-    public function editUser($username, $expire, $data_limit, $proxies = '')
+    public function editUser($username, $expire, $data_limit, $proxies = '',$status ='active',$note= '',$data_limit_reset_strategy = 'no_reset',$on_hold_expire_duration = 0,$on_hold_timeout = '2023-11-03T20:30:00')
     {
-        return $this->request('/api/user/' . $username, compact('expire', 'data_limit', 'proxies'), self::PUT);
+        return $this->request('/api/user/' . $username, compact('expire', 'data_limit', 'proxies','status','note','data_limit_reset_strategy','on_hold_expire_duration','on_hold_timeout'), self::PUT);
     }
 
     public function removeUser($username)
