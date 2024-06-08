@@ -17,10 +17,12 @@ class Marzban
     private $username = null;
     private $token = null;
     private $parameter = null;
+    protected $subPath;
 
-    public function __construct($url)
+    public function __construct($url, $subPath = '/sub/')
     {
         $this->url = $url;
+        $this->subPath = $subPath;
         return $this;
     }
 
