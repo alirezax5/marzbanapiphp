@@ -21,7 +21,7 @@ composer require alirezax5/marzbanapiphp
 ```php
 <?php
 include 'vendor/autoload.php';
-
+use alirezax5\MarzbanApi\Marzban;
 $mb = new Marzban('http://ip:port');
 $mb->setUsername('username');
 $mb->setPassword('password');
@@ -42,7 +42,7 @@ $mb->setToken('token');
 ```php
 <?php
 include 'vendor/autoload.php';
-
+use alirezax5\MarzbanApi\Marzban;
 $mb = new Marzban('http://ip:port');
 $mb->setUsername('username');
 $mb->setPassword('password');
