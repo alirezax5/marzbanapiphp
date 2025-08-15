@@ -4,14 +4,24 @@ namespace alirezax5\MarzbanApi\Api;
 
 trait Core
 {
-    public function getCoreStat()
+    public function getCores()
     {
-        return $this->request('/api/core');
+        return $this->request('/api/cores');
     }
 
-    public function restartCore()
+    public function getCore($core_id)
     {
-        return $this->request('/api/core/restart', [], self::POST);
+        return $this->request('/api/core/' . $core_id);
+    }
+
+    public function createCore($body)
+    {
+        return $this->request('/api/core/', $body, self::POST);
+    }
+
+    public function restartCore($core_id)
+    {
+        return $this->request('/api/core/' . $core_id . '/restart', [], self::POST);
     }
 
     public function getCoreConfig()
@@ -19,8 +29,13 @@ trait Core
         return $this->request('/api/core/config');
     }
 
-    public function editCoreConfig($body)
+    public function editCore($core_id, $body, $restart_nodes = true)
     {
-        return $this->request('/api/core/config', $body, self::PUT);
+        return $this->request('/api/core/' . $core_id . '?restart_nodes=' . $restart_nodes, $body, self::PUT);
+    }
+
+    public function removeCore($core_id)
+    {
+        return $this->request('/api/core/' . $core_id, [], self::DELETE);
     }
 }

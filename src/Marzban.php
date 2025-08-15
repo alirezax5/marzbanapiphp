@@ -2,11 +2,11 @@
 
 namespace alirezax5\MarzbanApi;
 
-use alirezax5\MarzbanApi\Api\{Admins, Core, Node, Subscription, System, User, UserTemplate};
+use alirezax5\MarzbanApi\Api\{Admins, Core, Groups, Node, Settings, Subscription, System, User, UserTemplate};
 
 class Marzban
 {
-    use Admins, Core, Node, Subscription, System, User, UserTemplate;
+    use Admins, Core, Node, Subscription, System, User, UserTemplate,Settings,Groups;
 
     const DELETE = 'DELETE';
     const GET = 'GET';

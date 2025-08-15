@@ -4,28 +4,29 @@ namespace alirezax5\MarzbanApi\Api;
 
 trait UserTemplate
 {
-    public function getuserTemplates($offset = null, $limit = null)
+    public function getUserTemplates($offset = null, $limit = null)
     {
         return $this->request('/api/user_template', compact('offset', 'limit'), self::GET);
     }
 
-    public function createuserTemplate($name, $data_limit = 0, $expire_duration = 0, $inbounds = '')
+    public function createUserTemplate($name, $data_limit = 0, $expire_duration = 0, $group_ids = null)
     {
-        return $this->request('/api/user_template', compact('name', 'data_limit', 'expire_duration', 'inbounds'), self::POST);
+        return $this->request('/api/user_template', compact('name', 'data_limit', 'expire_duration', 'group_ids'), self::POST);
     }
 
-    public function geteuserTemplate($id)
+    public function getUserTemplate($id)
     {
         return $this->request('/api/user_template/' . $id, [], self::POST);
     }
 
-    public function editUserTemplate($id, $name, $data_limit = 0, $expire_duration = 0, $inbounds = '')
+    public function editUserTemplate($id, $body)
     {
-        return $this->request('/api/user_template/' . $id, compact('name', 'data_limit', 'expire_duration', 'inbounds'), self::PUT);
+        return $this->request('/api/user_template/' . $id, $body, self::PUT);
     }
-    public function remveUserTemplate($id)
+
+    public function removeUserTemplate($id)
     {
-        return $this->request('/api/user_template/' . $id,[], self::PUT);
+        return $this->request('/api/user_template/' . $id, [], self::DELETE);
     }
 
 }
