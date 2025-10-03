@@ -107,12 +107,15 @@ class Marzban
 
         curl_setopt_array($ch, $options);
         $res = curl_exec($ch);
-        return json_decode($res, true);
+        $data = json_decode($res, true);
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $data;
+        }
+        return $res;
     }
 
     private function getUrl($path)
     {
-
         return $this->url . $path;
     }
 
