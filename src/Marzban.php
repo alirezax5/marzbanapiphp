@@ -70,15 +70,18 @@ class Marzban
         return $this->parameter;
     }
 
-    protected function request($path, $body = [], $httpMetHod = 'GET')
+    protected function request($path, $body = [], $httpMethod = 'GET')
     {
-        $data = $httpMetHod == 'POST' || $httpMetHod == 'PUT' ? json_encode($body) : http_build_query($body);
-        if ($this->getToken() != null)
-            $header = [
-                'Accept: application/json',
-                'Authorization: Bearer ' . $this->getToken(),
-                'Content-Type: application/json'
-            ];
+        $data = $httpMethod == 'POST' || $httpMethod == 'PUT' ? json_encode($body) : http_build_query($body);
+
+        $header = ['Accept: application/json'];
+
+        if ($this->getToken() != null) {
+            $header[] = 'Authorization: Bearer ' . $this->getToken();
+            if ($httpMethod == 'POST' || $httpMethod == 'PUT') {
+                $header[] = 'Content-Type: application/json';
+            }
+        }
 
         if ($path == '/api/admin/token') {
             $header = [
@@ -88,13 +91,12 @@ class Marzban
             $data = http_build_query($body);
         }
 
-
         $ch = curl_init();
         $options = [
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => $this->getUrl($path),
-            CURLOPT_POST => $httpMetHod == 'POST' ? true : false,
-            CURLOPT_CUSTOMREQUEST => $httpMetHod,
+            CURLOPT_POST => $httpMethod == 'POST' ? true : false,
+            CURLOPT_CUSTOMREQUEST => $httpMethod,
             CURLOPT_POSTFIELDS => $data,
             CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13',
             CURLOPT_FOLLOWLOCATION => true,
