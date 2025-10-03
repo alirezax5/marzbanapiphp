@@ -56,10 +56,7 @@ $mb->setToken($token);
 جهت حمایت از بنده میتوانید به پروژه ستاره بدهید و یا بنده را دونیت نمایید , آدرس های ولت های بنده :
 </div>
 
-TRX & USDT
-```
-TQk6AHMREwER9EyGzhUsVv2hUQygGMyCeT
-```
+
 TON
 ```
 UQBnlnOGefCkwgtO7IZdOBFuoojkpKgK3mI1GmH3MH_gG0A9
