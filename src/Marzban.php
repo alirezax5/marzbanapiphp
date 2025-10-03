@@ -107,6 +107,19 @@ class Marzban
 
         curl_setopt_array($ch, $options);
         $res = curl_exec($ch);
+
+        if ($res === false) {
+            curl_close($ch);
+            return false;
+        }
+
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode !== 200) {
+            return false;
+        }
+
         $data = json_decode($res, true);
         if (json_last_error() === JSON_ERROR_NONE) {
             return $data;
