@@ -3,15 +3,17 @@
 namespace alirezax5\MarzbanApi;
 
 use alirezax5\MarzbanApi\Api\{Admins, Core, Groups, Node, Settings, Subscription, System, User, UserTemplate};
-
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 class Marzban
 {
-    use Admins, Core, Node, Subscription, System, User, UserTemplate,Settings,Groups;
+    use Admins, Core, Node, Subscription, System, User, UserTemplate, Settings, Groups;
 
     const DELETE = 'DELETE';
     const GET = 'GET';
     const PUT = 'PUT';
     const POST = 'POST';
+    public $httpCode = 201;
     public $url = null;
     private $password = null;
     private $username = null;
@@ -72,61 +74,64 @@ class Marzban
 
     protected function request($path, $body = [], $httpMethod = 'GET')
     {
-        $data = $httpMethod == 'POST' || $httpMethod == 'PUT' ? json_encode($body) : http_build_query($body);
+        $isTokenEndpoint = ($path === '/api/admin/token');
 
-        $header = ['Accept: application/json'];
+        $options = [
+            'headers' => [
+                'Accept' => 'application/json',
+                'User-Agent' => 'PHP-Guzzle/' . PHP_VERSION,
+            ],
+            'timeout' => 30,
+            'verify' => false,
+        ];
 
-        if ($this->getToken() != null) {
-            $header[] = 'Authorization: Bearer ' . $this->getToken();
-            if ($httpMethod == 'POST' || $httpMethod == 'PUT') {
-                $header[] = 'Content-Type: application/json';
+        if ($this->getToken() !== null) {
+            $options['headers']['Authorization'] = 'Bearer ' . $this->getToken();
+        }
+
+        if ($httpMethod === 'GET') {
+            if (!empty($body)) {
+                $options['query'] = $body;
+            }
+        } else {
+            if ($isTokenEndpoint) {
+                $options['form_params'] = $body;
+            } else {
+                $options['json'] = $body;
             }
         }
 
-        if ($path == '/api/admin/token') {
-            $header = [
-                'Content-Type: application/x-www-form-urlencoded',
-                'Accept: application/json'
+        if ($isTokenEndpoint) {
+            $options['headers'] = [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Accept' => 'application/json',
             ];
-            $data = http_build_query($body);
+            if ($httpMethod === 'GET') {
+                $options['query'] = $body;
+                unset($options['form_params']);
+            }
+            unset($options['headers']['Authorization']);
+        } else {
+            if (in_array($httpMethod, ['POST', 'PUT'], true)) {
+                $options['headers']['Content-Type'] = 'application/json';
+            }
         }
 
-        $ch = curl_init();
-        $options = [
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $this->getUrl($path),
-            CURLOPT_POST => $httpMethod == 'POST' ? true : false,
-            CURLOPT_CUSTOMREQUEST => $httpMethod,
-            CURLOPT_POSTFIELDS => $data,
-            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13',
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_HTTPHEADER => $header
-        ];
+        $client = new Client(['base_uri' => $this->url]);
 
-        curl_setopt_array($ch, $options);
-        $res = curl_exec($ch);
+        try {
+            $response = $client->request($httpMethod, $path, $options);
+            $this->httpCode = $response->getStatusCode();
 
-        if ($res === false) {
-            curl_close($ch);
+            $body = $response->getBody()->getContents();
+            $decoded = json_decode($body, true);
+
+            return (json_last_error() === JSON_ERROR_NONE) ? $decoded : $body;
+        } catch (RequestException $e) {
+            $this->httpCode = $e->getCode() ?? 0;
             return false;
         }
-
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($httpCode !== 200) {
-            return false;
-        }
-
-        $data = json_decode($res, true);
-        if (json_last_error() === JSON_ERROR_NONE) {
-            return $data;
-        }
-        return $res;
     }
-
     private function getUrl($path)
     {
         return $this->url . $path;

@@ -49,9 +49,9 @@ trait User
         return $this->request('/api/users', compact('offset', 'limit', 'username', 'status', 'sort'), self::GET);
     }
 
-    public function usageUser($username, $start = null, $end = null)
+    public function usageUser($username,$period = 'hour',$node_id= null, $start = null, $end = null)
     {
-        return $this->request('/api/user/' . $username . '/usage', compact('start', 'end'), self::GET);
+        return $this->request('/api/user/' . $username . '/usage', compact('start','period', 'end', 'node_id'), self::GET);
     }
 
     public function removeExpired($passed_time = null)

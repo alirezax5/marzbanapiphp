@@ -70,6 +70,11 @@ trait Node
     }
 
 
+    public function nodeUserOnline($node_id, $username)
+    {
+        return $this->request('/api/node/' . $node_id . '/online_stats/' . $username , [], self::GET);
+    }
+
     public function nodeUserOnlineIp($node_id, $username)
     {
         return $this->request('/api/node/' . $node_id . '/online_stats/' . $username . '/ip', [], self::GET);
