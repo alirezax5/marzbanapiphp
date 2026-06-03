@@ -14,6 +14,16 @@ trait Node
         return $this->request('/api/nodes');
     }
 
+    public function getNodesSimple($ids = null, $offset = 0, $limit = 10, $search = null, $all = false)
+    {
+        return $this->request('/api/nodes/simple', compact('offset', 'limit', 'ids', 'search', 'all'));
+    }
+
+    public function reconnectAllNode()
+    {
+        return $this->request('/api/nodes/reconnect', [], self::POST);
+    }
+
     public function usageNodes()
     {
         return $this->request('/api/nodes/usage');
@@ -21,7 +31,7 @@ trait Node
 
     public function addNode($name, $address, $core_config_id, $server_ca, $port = '62050', $api_port = '62051', $connection_type = 'rest', $gather_logs = true, $keep_alive = 60, $max_logs = 1000, $usage_coefficient = '1')
     {
-        return $this->request('/api/node/{node_id}', compact('name', 'address', 'core_config_id', 'server_ca', 'port', 'api_port', 'connection_type', 'gather_logs', 'keep_alive', 'max_logs', 'usage_coefficient'), self::POST);
+        return $this->request('/api/node', compact('name', 'address', 'core_config_id', 'server_ca', 'port', 'api_port', 'connection_type', 'gather_logs', 'keep_alive', 'max_logs', 'usage_coefficient'), self::POST);
     }
 
     public function getNode($node_id)
@@ -39,6 +49,26 @@ trait Node
         return $this->request('/api/node/' . $node_id, [], self::DELETE);
     }
 
+    public function updateNode($node_id)
+    {
+        return $this->request('/api/node/' . $node_id . '/update', [], self::POST);
+    }
+
+    public function updateCoreNode($node_id, $core_version)
+    {
+        return $this->request('/api/node/' . $node_id . '/core_update', compact('core_version'), self::POST);
+    }
+
+    public function updateGeoFilesNode($node_id, $region)
+    {
+        return $this->request('/api/node/' . $node_id . '/core_update', compact('region'), self::POST);
+    }
+
+    public function resetNodeUsage($node_id)
+    {
+        return $this->request('/api/node/' . $node_id . '/reset', [], self::POST);
+    }
+
     public function reconnectNode($node_id)
     {
         return $this->request('/api/node/' . $node_id . '/reconnect', [], self::POST);
@@ -51,7 +81,7 @@ trait Node
 
     public function nodeLogs($node_id)
     {
-        return $this->request('/api/node/' . $node_id . '/sync', [], self::GET);
+        return $this->request('/api/node/' . $node_id . '/logs', [], self::GET);
     }
 
     public function nodeStats($node_id, $start, $end, $period = 'hour')
@@ -69,10 +99,9 @@ trait Node
         return $this->request('/api/nodes/realtime_stats', [], self::GET);
     }
 
-
     public function nodeUserOnline($node_id, $username)
     {
-        return $this->request('/api/node/' . $node_id . '/online_stats/' . $username , [], self::GET);
+        return $this->request('/api/node/' . $node_id . '/online_stats/' . $username, [], self::GET);
     }
 
     public function nodeUserOnlineIp($node_id, $username)
@@ -83,6 +112,36 @@ trait Node
     public function nodeClearUsageData($start, $end, $table = 'node_user_usages')
     {
         return $this->request('/api/nodes/clear_usage_data/' . $table, compact('start', 'end'), self::DELETE);
+    }
+
+    public function bulkDeleteNode($ids)
+    {
+        return $this->request('/api/nodes/bulk/delete', compact('ids'), self::POST);
+    }
+
+    public function bulkDisableNode($ids)
+    {
+        return $this->request('/api/nodes/bulk/disable', compact('ids'), self::POST);
+    }
+
+    public function bulkEnableNode($ids)
+    {
+        return $this->request('/api/nodes/bulk/enable', compact('ids'), self::POST);
+    }
+
+    public function bulkResetNode($ids)
+    {
+        return $this->request('/api/nodes/bulk/reset', compact('ids'), self::POST);
+    }
+
+    public function bulkReconnectNode($ids)
+    {
+        return $this->request('/api/nodes/bulk/reconnect', compact('ids'), self::POST);
+    }
+
+    public function bulkUpdateNode($ids)
+    {
+        return $this->request('/api/nodes/bulk/update', compact('ids'), self::POST);
     }
 
 }

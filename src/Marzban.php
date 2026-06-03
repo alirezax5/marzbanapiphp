@@ -2,12 +2,24 @@
 
 namespace alirezax5\MarzbanApi;
 
-use alirezax5\MarzbanApi\Api\{Admins, Core, Groups, Node, Settings, Subscription, System, User, UserTemplate};
+use alirezax5\MarzbanApi\Api\{Admins,
+    ClientTemplate,
+    Core,
+    Groups,
+    Host,
+    Node,
+    Settings,
+    Subscription,
+    System,
+    User,
+    UserHWID,
+    UserTemplate};
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+
 class Marzban
 {
-    use Admins, Core, Node, Subscription, System, User, UserTemplate, Settings, Groups;
+    use Admins, Core, Node, Subscription, System, User, UserTemplate, Settings, Groups, ClientTemplate,Host,UserHWID;
 
     const DELETE = 'DELETE';
     const GET = 'GET';
@@ -132,6 +144,7 @@ class Marzban
             return false;
         }
     }
+
     private function getUrl($path)
     {
         return $this->url . $path;

@@ -14,13 +14,15 @@ trait System
         return $this->request('/api/inbounds');
     }
 
-    public function hosts()
+    public function inboundsDetails()
     {
-        return $this->request('/api/hosts');
+        return $this->request('/api/inbounds/details');
     }
 
-    public function editHosts($body)
+    public function workersHealth()
     {
-        return $this->request('/api/hosts', $body, self::PUT);
+        return $this->request('/api/workers/health');
     }
+
+
 }
