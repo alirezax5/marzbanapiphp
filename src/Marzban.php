@@ -2,152 +2,74 @@
 
 namespace alirezax5\MarzbanApi;
 
-use alirezax5\MarzbanApi\Api\{Admins,
-    ClientTemplate,
-    Core,
-    Groups,
-    Host,
-    Node,
-    Settings,
-    Subscription,
-    System,
-    User,
-    UserHWID,
-    UserTemplate};
+use alirezax5\MarzbanApi\Endpoints\Admin;
+use alirezax5\MarzbanApi\Endpoints\ClientTemplate;
+use alirezax5\MarzbanApi\Endpoints\Core;
+use alirezax5\MarzbanApi\Endpoints\Groups;
+use alirezax5\MarzbanApi\Endpoints\Host;
+use alirezax5\MarzbanApi\Endpoints\Node;
+use alirezax5\MarzbanApi\Endpoints\Settings;
+use alirezax5\MarzbanApi\Endpoints\Subscription;
+use alirezax5\MarzbanApi\Endpoints\System;
+use alirezax5\MarzbanApi\Endpoints\User;
+use alirezax5\MarzbanApi\Endpoints\UserHWID;
+use alirezax5\MarzbanApi\Endpoints\UserTemplate;
+use alirezax5\MarzbanApi\Http\HttpClient;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 
 class Marzban
 {
-    use Admins, Core, Node, Subscription, System, User, UserTemplate, Settings, Groups, ClientTemplate,Host,UserHWID;
+    private string $url;
+    private HttpClient $client;
+    private ?string $token = null;
 
-    const DELETE = 'DELETE';
-    const GET = 'GET';
-    const PUT = 'PUT';
-    const POST = 'POST';
-    public $httpCode = 201;
-    public $url = null;
-    private $password = null;
-    private $username = null;
-    private $token = null;
-    private $parameter = null;
-    protected $subPath;
+    public Admin $admin;
+    public ClientTemplate $clientTemplate;
+    public Core $core;
+    public Groups $groups;
+    public Host $host;
+    public Node $node;
+    public Settings $settings;
+    public Subscription $subscription;
+    public System $system;
+    public User $user;
+    public UserHWID $userHWID;
+    public UserTemplate $userTemplate;
 
-    public function __construct($url, $subPath = '/sub/')
+    public function __construct(string $url, string $subPath = '/sub/')
     {
         $this->url = $url;
-        $this->subPath = $subPath;
-        return $this;
+
+        $this->client = new HttpClient(
+            new Client([
+                'base_uri' => $this->url,
+            ]),
+            $subPath
+        );
+
+        $this->admin = new Admin($this->client);
+        $this->clientTemplate = new ClientTemplate($this->client);
+        $this->core = new Core($this->client);
+        $this->groups = new Groups($this->client);
+        $this->host = new Host($this->client);
+        $this->node = new Node($this->client);
+        $this->settings = new Settings($this->client);
+        $this->subscription = new Subscription($this->client);
+        $this->system = new System($this->client);
+        $this->user = new User($this->client);
+        $this->userHWID = new UserHWID($this->client);
+        $this->userTemplate = new UserTemplate($this->client);
     }
 
-    public function setUsername($username)
-    {
-        $this->username = $username;
-        return $this;
-    }
-
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    public function setPassword($password)
-    {
-        $this->password = $password;
-        return $this;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    public function setToken($token)
+    public function setToken(string $token): self
     {
         $this->token = $token;
+        $this->client->setToken($token);
         return $this;
     }
 
-    public function getToken()
+    public function getToken(): ?string
     {
         return $this->token;
     }
-
-    public function setParameter($parameter)
-    {
-        $this->parameter = $parameter;
-        return $this;
-    }
-
-    public function getParameter()
-    {
-        return $this->parameter;
-    }
-
-    protected function request($path, $body = [], $httpMethod = 'GET')
-    {
-        $isTokenEndpoint = ($path === '/api/admin/token');
-
-        $options = [
-            'headers' => [
-                'Accept' => 'application/json',
-                'User-Agent' => 'PHP-Guzzle/' . PHP_VERSION,
-            ],
-            'timeout' => 30,
-            'verify' => false,
-        ];
-
-        if ($this->getToken() !== null) {
-            $options['headers']['Authorization'] = 'Bearer ' . $this->getToken();
-        }
-
-        if ($httpMethod === 'GET') {
-            if (!empty($body)) {
-                $options['query'] = $body;
-            }
-        } else {
-            if ($isTokenEndpoint) {
-                $options['form_params'] = $body;
-            } else {
-                $options['json'] = $body;
-            }
-        }
-
-        if ($isTokenEndpoint) {
-            $options['headers'] = [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-                'Accept' => 'application/json',
-            ];
-            if ($httpMethod === 'GET') {
-                $options['query'] = $body;
-                unset($options['form_params']);
-            }
-            unset($options['headers']['Authorization']);
-        } else {
-            if (in_array($httpMethod, ['POST', 'PUT'], true)) {
-                $options['headers']['Content-Type'] = 'application/json';
-            }
-        }
-
-        $client = new Client(['base_uri' => $this->url]);
-
-        try {
-            $response = $client->request($httpMethod, $path, $options);
-            $this->httpCode = $response->getStatusCode();
-
-            $body = $response->getBody()->getContents();
-            $decoded = json_decode($body, true);
-
-            return (json_last_error() === JSON_ERROR_NONE) ? $decoded : $body;
-        } catch (RequestException $e) {
-            $this->httpCode = $e->getCode() ?? 0;
-            return false;
-        }
-    }
-
-    private function getUrl($path)
-    {
-        return $this->url . $path;
-    }
-
 }
