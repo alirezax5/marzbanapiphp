@@ -15,40 +15,19 @@ composer require alirezax5/marzbanapiphp
 <div dir="rtl">
 
 ## اجرا
-برای راه اندازی اطلاعات اولیه را مانند کد زیر بنویسید :
 </div>
 
 ```php
 <?php
 include 'vendor/autoload.php';
 use alirezax5\MarzbanApi\Marzban;
-$mb = new Marzban('http://ip:port');
-$mb->setUsername('username');
-$mb->setPassword('password');
-$mb->setToken('token');
+$mb = new Marzban('url', '/getConfig/');
+$an = $mb->admin->adminToken('username', 'password');
+$mb->setToken($an->access_token);
+$a = $mb->user->all();
 ```
 
-<div dir="rtl">
 
-## توکن
-اکثر متد های api مرزبان با توکن باید احراز هویت شوند برای همین نیاز می باشد که حتما توکن خودتون رو به setToken پاس دهید.
-نام کاربری و رمز فقط به هنگام دریافت توکن استفاده می شود و شما باید توکن را برای استفاده های بعدی در یکجا ذخیره کنید.
-
-پیشنهاد میکنم در تنظیمات مرزبان زمان انقضای توکن را نامحدود بگذارید.
-
-نمونه کد جهت ساخت توکن :
-</div>
-
-```php
-<?php
-include 'vendor/autoload.php';
-use alirezax5\MarzbanApi\Marzban;
-$mb = new Marzban('http://ip:port');
-$mb->setUsername('username');
-$mb->setPassword('password');
-$token = $mb->getAdminToken();
-$mb->setToken($token);
-```
 
 <div dir="rtl">
 
