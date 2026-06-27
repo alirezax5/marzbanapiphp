@@ -3,12 +3,14 @@
 namespace alirezax5\MarzbanApi;
 
 use alirezax5\MarzbanApi\Endpoints\Admin;
+use alirezax5\MarzbanApi\Endpoints\AdminRoles;
 use alirezax5\MarzbanApi\Endpoints\ClientTemplate;
 use alirezax5\MarzbanApi\Endpoints\Core;
 use alirezax5\MarzbanApi\Endpoints\Groups;
 use alirezax5\MarzbanApi\Endpoints\Host;
 use alirezax5\MarzbanApi\Endpoints\Node;
 use alirezax5\MarzbanApi\Endpoints\Settings;
+use alirezax5\MarzbanApi\Endpoints\Setup;
 use alirezax5\MarzbanApi\Endpoints\Subscription;
 use alirezax5\MarzbanApi\Endpoints\System;
 use alirezax5\MarzbanApi\Endpoints\User;
@@ -24,12 +26,14 @@ class Marzban
     private ?string $token = null;
 
     public Admin $admin;
+    public AdminRoles $adminRoles;
     public ClientTemplate $clientTemplate;
     public Core $core;
     public Groups $groups;
     public Host $host;
     public Node $node;
     public Settings $settings;
+    public Setup $setup;
     public Subscription $subscription;
     public System $system;
     public User $user;
@@ -48,12 +52,14 @@ class Marzban
         );
 
         $this->admin = new Admin($this->client);
+        $this->adminRoles = new AdminRoles($this->client);
         $this->clientTemplate = new ClientTemplate($this->client);
         $this->core = new Core($this->client);
         $this->groups = new Groups($this->client);
         $this->host = new Host($this->client);
         $this->node = new Node($this->client);
         $this->settings = new Settings($this->client);
+        $this->setup = new Setup($this->client);
         $this->subscription = new Subscription($this->client);
         $this->system = new System($this->client);
         $this->user = new User($this->client);
