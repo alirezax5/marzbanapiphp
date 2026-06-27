@@ -15,7 +15,7 @@ class Admin extends Endpoint
     }
 
     public function all(
-       $array = null
+       $array = []
     ): mixed
     {
         return $this->client->get(
@@ -24,7 +24,7 @@ class Admin extends Endpoint
     }
 
     public function simple(
-        $array = null
+        $array = []
     ): mixed
     {
         return $this->client->get(
