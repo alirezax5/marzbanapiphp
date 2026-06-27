@@ -4,7 +4,7 @@ namespace alirezax5\MarzbanApi\Endpoints;
 
 class AdminRoles extends Endpoint
 {
-    public function getRoles($array): mixed
+    public function getRoles( $array = null): mixed
     {
         return $this->client->get('/api/admin-roles', $array);
     }
