@@ -5,34 +5,18 @@ namespace alirezax5\MarzbanApi\Endpoints;
 class Groups extends Endpoint
 {
     public function all(
-        int $offset = 0,
-        int $limit = 10
+        $array
     ): mixed {
         return $this->client->get(
-            '/api/groups',
-            compact(
-                'offset',
-                'limit'
-            )
+            '/api/groups',$array
         );
     }
 
     public function simple(
-        ?array $ids = null,
-        int $offset = 0,
-        int $limit = 10,
-        ?string $search = null,
-        bool $all = false
+        $array
     ): mixed {
         return $this->client->get(
-            '/api/groups/simple',
-            array_filter([
-                'ids' => $ids,
-                'offset' => $offset,
-                'limit' => $limit,
-                'search' => $search,
-                'all' => $all,
-            ], fn ($v) => $v !== null)
+            '/api/groups/simple',$array
         );
     }
 

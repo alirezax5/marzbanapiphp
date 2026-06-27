@@ -19,50 +19,20 @@ class User extends Endpoint
     }
 
     public function all(
-        int     $offset = 0,
-        int     $limit = 0,
-        ?string $username = null,
-        ?string $status = null,
-        ?string $sort = null,
+        $array
     ): mixed
     {
         return $this->client->get(
-            '/api/users',
-            array_filter(
-                compact(
-                    'offset',
-                    'limit',
-                    'username',
-                    'status',
-                    'sort'
-                ),
-                fn($v) => $v !== null
-            )
+            '/api/users',$array
         );
     }
 
     public function simple(
-        ?array  $ids = null,
-        int     $offset = 0,
-        int     $limit = 0,
-        ?array  $usernames = null,
-        ?string $status = null,
-        ?string $sort = null,
+        $array
     ): mixed
     {
         return $this->client->get(
-            '/api/users/simple',
-            array_filter(
-                compact(
-                    'ids',
-                    'offset',
-                    'limit',
-                    'usernames',
-                    'status',
-                    'sort'
-                ),
-                fn($v) => $v !== null
-            )
+            '/api/users/simple',$array
         );
     }
 

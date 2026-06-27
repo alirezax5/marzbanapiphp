@@ -11,6 +11,19 @@ class System extends Endpoint
         );
     }
 
+    public function resourcesStats(): mixed
+    {
+        return $this->client->get(
+            '/api/system/resources'
+        );
+    }
+    public function usersStats(): mixed
+    {
+        return $this->client->get(
+            '/api/system/users'
+        );
+    }
+
     public function inbounds(): mixed
     {
         return $this->client->get(

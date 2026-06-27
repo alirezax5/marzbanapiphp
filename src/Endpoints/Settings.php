@@ -20,12 +20,11 @@ class Settings extends Endpoint
         );
     }
 
-    public function editGeneral(
-        array $body
+    public function getGeneral(
+
     ): mixed {
-        return $this->client->post(
-            '/api/settings/general',
-            $body
+        return $this->client->get(
+            '/api/settings/general'
         );
     }
 }

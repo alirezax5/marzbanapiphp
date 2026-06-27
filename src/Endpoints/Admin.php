@@ -15,42 +15,19 @@ class Admin extends Endpoint
     }
 
     public function all(
-        ?string $username = null,
-        int     $offset = 0,
-        int     $limit = 10
+       $array
     ): mixed
     {
         return $this->client->get(
-            '/api/admins',
-            array_filter(
-                compact('username', 'offset', 'limit'),
-                fn($v) => $v !== null
-            )
+            '/api/admins',$array
         );
     }
 
     public function simple(
-        ?string $username = null,
-        ?string $search = null,
-        int     $offset = 0,
-        int     $limit = 10,
-        ?string $sort = null,
-        bool    $all = false
-    ): mixed
+        $array ): mixed
     {
         return $this->client->get(
-            '/api/admins/simple',
-            array_filter(
-                compact(
-                    'username',
-                    'search',
-                    'offset',
-                    'limit',
-                    'sort',
-                    'all'
-                ),
-                fn($v) => $v !== null
-            )
+            '/api/admins/simple',$array
         );
     }
 
@@ -72,6 +49,20 @@ class Admin extends Endpoint
     {
         return $this->client->put(
             "/api/admin/{$username}",
+            array_filter(
+                $data,
+                fn($v) => $v !== null
+            )
+        );
+    }
+
+    public function updateByUsername(
+        string $username,
+        array  $data
+    ): mixed
+    {
+        return $this->client->put(
+            "/api/admin/by-username/{$username}",
             array_filter(
                 $data,
                 fn($v) => $v !== null
@@ -102,6 +93,15 @@ class Admin extends Endpoint
         );
     }
 
+    public function deleteByUsername(
+        int|string $id
+    ): mixed
+    {
+        return $this->client->delete(
+            "/api/admin/by-username/{$id}"
+        );
+    }
+
     public function deleteById(
         int|string $id
     ): mixed
@@ -127,6 +127,15 @@ class Admin extends Endpoint
         );
     }
 
+    public function disableUsersByUsername(
+        int|string $Username
+    ): mixed
+    {
+        return $this->client->post(
+            "/api/admin/by-username/{$Username}/users/disable"
+        );
+    }
+
     public function disableUsersById(
         int|string $id
     ): mixed
@@ -142,6 +151,15 @@ class Admin extends Endpoint
     {
         return $this->client->post(
             "/api/admin/{$username}/users/activate"
+        );
+    }
+
+    public function activateUsersByUsername(
+        int|string $id
+    ): mixed
+    {
+        return $this->client->post(
+            "/api/admin/by-username/{$id}/users/activate"
         );
     }
 
@@ -165,6 +183,27 @@ class Admin extends Endpoint
     {
         return $this->client->post(
             "/api/admin/{$username}/usage",
+            array_filter([
+                'period' => $period,
+                'node_id' => $nodeId,
+                'group_by_node' => $groupByNode,
+                'start' => $start,
+                'end' => $end,
+            ], fn($v) => $v !== null)
+        );
+    }
+
+    public function usageByUsername(
+        int|string $username,
+        string     $period = 'day',
+        ?int       $nodeId = null,
+        bool       $groupByNode = false,
+        ?int       $start = null,
+        ?int       $end = null
+    ): mixed
+    {
+        return $this->client->post(
+            "/api/admin/by-username/{$username}/usage",
             array_filter([
                 'period' => $period,
                 'node_id' => $nodeId,
@@ -205,6 +244,14 @@ class Admin extends Endpoint
         );
     }
 
+    public function resetByUsername(
+        string $username
+    ): mixed
+    {
+        return $this->client->post(
+            "/api/admin/by-username/{$username}/reset"
+        );
+    }
     public function resetById(
         int|string $id
     ): mixed
@@ -220,6 +267,15 @@ class Admin extends Endpoint
     {
         return $this->client->delete(
             "/api/admin/{$username}/users"
+        );
+    }
+
+    public function removeUsersByUsername(
+        string $username
+    ): mixed
+    {
+        return $this->client->delete(
+            "/api/admin/by-username/{$username}/users"
         );
     }
 
